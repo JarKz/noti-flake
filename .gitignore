@@ -1,2 +1,4 @@
 # Omit the nix build directory
 result/
+# It may also be a symlink
+result
