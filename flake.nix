@@ -101,7 +101,7 @@
                 BusName = "org.freedesktop.Notifications";
                 Environment = "NOTI_LOG=info";
                 ExecCondition = "${pkgs.bash}/bin/sh -c '[ -n $WAYLAND_DISPLAY ]'";
-                ExecStart = "${noti-rs}/bin/noti-rs run";
+                ExecStart = "${noti-rs}/bin/noti run";
                 Restart = "on-failure";
               };
             };
