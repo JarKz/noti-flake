@@ -62,7 +62,7 @@
       {
         packages.default = noti;
 
-        homeManagerModules.default =
+        homeModules.default =
           { config, lib, ... }: {
             options.programs.noti = {
               enable = lib.mkEnableOption "Noti Application";
