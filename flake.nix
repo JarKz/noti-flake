@@ -66,7 +66,11 @@
       )) packages;
 
       homeModules.default =
-        { config, lib, pkgs, ... }: {
+        { config, lib, pkgs, ... }:
+        let
+          noti-rs = self.packages."${pkgs.stdenv.system}".default;
+        in
+        {
           options.programs.noti-rs = {
             enable = lib.mkEnableOption "Noti Application";
 
@@ -80,21 +84,24 @@
 
           config = lib.mkIf config.programs.noti-rs.enable {
             home.packages = [
-              self.packages."${pkgs.stdenv.system}".default
+              noti-rs
             ];
 
             systemd.user.services.noti = lib.mkIf config.programs.noti-rs.service {
-              enable = true;
-              description = "Noti — Wayland notification daemon";
-              partOf = [ "graphical-session.target" ];
-              after = [ "graphical-session.target" ];
-              wantedBy = [ "graphical-session.target" ];
-              serviceConfig = {
+              Unit = {
+                Description = "Noti — Wayland notification daemon";
+                PartOf = [ "graphical-session.target" ];
+                After = [ "graphical-session.target" ];
+              };
+              Install = {
+                WantedBy = [ "graphical-session.target" ];
+              };
+              Service = {
                 Type = "dbus";
                 BusName = "org.freedesktop.Notifications";
                 Environment = "NOTI_LOG=info";
-                ExecCondition = "${pkgs.sh} -c '[ -n $WAYLAND_DISPLAY ]'";
-                ExecStart = "${pkgs.noti-rs}/bin/noti-rs run";
+                ExecCondition = "${pkgs.bash}/bin/sh -c '[ -n $WAYLAND_DISPLAY ]'";
+                ExecStart = "${noti-rs}/bin/noti-rs run";
                 Restart = "on-failure";
               };
             };
