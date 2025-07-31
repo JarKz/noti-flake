@@ -83,7 +83,7 @@
               pkgs.noti
             ];
 
-            systemd.user.services.noti = lib.mkIf config.programs.noti.service.enable {
+            systemd.user.services.noti = lib.mkIf config.programs.noti.service {
               enable = true;
               description = "Noti — Wayland notification daemon";
               partOf = [ "graphical-session.target" ];
