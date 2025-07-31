@@ -1,0 +1,2 @@
+# Omit the nix build directory
+result/
