@@ -70,8 +70,10 @@
           options.programs.noti = {
             enable = lib.mkEnableOption "Noti Application";
 
-            service = {
-              enable = lib.mkEnableOption "Noti Service";
+            service = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Enable noti systemd service";
             };
           };
 
@@ -81,7 +83,8 @@
               pkgs.noti
             ];
 
-            systemd.services.noti = lib.mkIf config.programs.noti.service.enable {
+            systemd.user.services.noti = lib.mkIf config.programs.noti.service.enable {
+              enable = true;
               description = "Noti — Wayland notification daemon";
               partOf = [ "graphical-session.target" ];
               after = [ "graphical-session.target" ];
