@@ -25,7 +25,7 @@
 
           rustToolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal);
 
-          noti = pkgs.rustPlatform.buildRustPackage {
+          noti-rs = pkgs.rustPlatform.buildRustPackage {
             pname = "noti";
             version = "0.1.0";
 
@@ -61,13 +61,13 @@
           };
         in
         {
-          packages.default = noti;
+          packages.default = noti-rs;
         }
       )) packages;
 
       homeModules.default =
         { config, lib, pkgs, ... }: {
-          options.programs.noti = {
+          options.programs.noti-rs = {
             enable = lib.mkEnableOption "Noti Application";
 
             service = lib.mkOption {
@@ -78,12 +78,12 @@
           };
 
 
-          config = lib.mkIf config.programs.noti.enable {
+          config = lib.mkIf config.programs.noti-rs.enable {
             home.packages = [
-              pkgs.noti
+              self.packages."${pkgs.stdenv.system}".default
             ];
 
-            systemd.user.services.noti = lib.mkIf config.programs.noti.service {
+            systemd.user.services.noti = lib.mkIf config.programs.noti-rs.service {
               enable = true;
               description = "Noti — Wayland notification daemon";
               partOf = [ "graphical-session.target" ];
@@ -94,13 +94,12 @@
                 BusName = "org.freedesktop.Notifications";
                 Environment = "NOTI_LOG=info";
                 ExecCondition = "${pkgs.sh} -c '[ -n $WAYLAND_DISPLAY ]'";
-                ExecStart = "${pkgs.noti}/bin/noti run";
+                ExecStart = "${pkgs.noti-rs}/bin/noti-rs run";
                 Restart = "on-failure";
               };
             };
           };
         };
-
     };
 }
 
