@@ -6,6 +6,8 @@ This flake provides the [`noti`](https://github.com/noti-rs/noti) appliation as 
 - [ ] Minimal build size
 - [X] Systemd service as option
 
+> [!WARN]
+> It's not easy to implement the minimal build size because of cargo build caveats. The nix flake is sandboxed and doesn't permit to fetch packages outside. And becuase of this building rust-std will be very painful. So I decided to left as potential option.
 
 ## Installation
 
